@@ -257,7 +257,11 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
   - Only one request per company per minute, and 5 per IP per 10 minutes.
   - Only a hash of the link token is stored.
   - A link works once, and older open links stop working after a reset.
-- **Email service:** emails are sent with **Resend** (`RESEND_API_KEY`, optional `EMAIL_FROM` on a verified domain).
+- **Email service:** emails are sent through **Gmail SMTP with an app password**, using `nodemailer`.
+  - Settings: `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=587`, `SMTP_USE_TLS=true`, `SMTP_USER=corp.codeaex@gmail.com`, `SMTP_PASSWORD`, `SMTP_FROM_EMAIL`, `SMTP_FROM_NAME`.
+  - A From address other than the Gmail account only works if it is added in Gmail under "Send mail as". Resend (`RESEND_API_KEY`) is the alternative when SMTP isn't set.
+  - The admin **Account** page shows whether the email login works. It checks the login without sending anything.
+  - Gmail needs 2-Step Verification on the account, then an app password from https://myaccount.google.com/apppasswords. Free Gmail allows roughly a few hundred emails per day, plenty for password resets.
   - Without it, no email is sent and the **admin gets a notification** "Company X asked for a password reset", so they can set a password on the company page.
   - The notification disappears once the password is reset.
 - The admin login is not affected (the admin password is set in the environment).

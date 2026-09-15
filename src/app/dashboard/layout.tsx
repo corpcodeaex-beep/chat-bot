@@ -18,6 +18,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
         { href: "/dashboard/companies", label: "Companies", icon: Users },
         { href: "/dashboard/bots", label: "All bots", icon: Bot },
         { href: "/dashboard/new", label: "New bot", icon: Plus },
+        { href: "/dashboard/account", label: "Account", icon: KeyRound },
       ]
     : [
         { href: "/dashboard", label: "My assistants", icon: MessageSquareText },
