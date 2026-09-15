@@ -30,11 +30,11 @@ body {
 @theme {
   --color-mk-text: #1a1f2b;
   --color-mk-muted: #5b616e;
-  --color-mk-background: #f7f5f0;
+  --color-mk-background: #f7f8fa;
   --color-mk-primary: #1e2a3a;
   --color-mk-primary-dark: #121a26;
-  --color-mk-secondary: #e8e1d3;
-  --color-mk-accent: #b08d57;
+  --color-mk-secondary: #e3e8ef;
+  --color-mk-accent: #5b7a99;
   --color-mk-sky: #a9b8ad;
 }
 

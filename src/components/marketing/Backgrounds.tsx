@@ -3,8 +3,8 @@
 
 const PALETTE = {
   primary: "#1e2a3a",
-  secondary: "#e8e1d3",
-  accent: "#b08d57",
+  secondary: "#e3e8ef",
+  accent: "#5b7a99",
   sky: "#a9b8ad",
 };
 

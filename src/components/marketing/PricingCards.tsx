@@ -56,7 +56,7 @@ export default function PricingCards() {
             <Link
               href={`/contact?plan=${key}`}
               className={`mt-6 rounded-full py-2.5 text-center text-sm font-semibold transition ${
-                popular ? "bg-white text-mk-text hover:bg-stone-50" : "bg-mk-primary text-white shadow-md shadow-mk-primary/25 hover:bg-mk-primary-dark"
+                popular ? "bg-white text-mk-text hover:bg-slate-50" : "bg-mk-primary text-white shadow-md shadow-mk-primary/25 hover:bg-mk-primary-dark"
               }`}
             >
               {plan.priceMonthly === null ? "Talk to us" : "Start free trial"}

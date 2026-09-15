@@ -14,7 +14,7 @@ export default function CtaBanner({
     <section className="px-4 py-20 sm:px-6">
       <Reveal className="relative mx-auto max-w-6xl">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-linear-to-br from-mk-primary-dark via-mk-primary to-[#2c3b50] px-6 py-20 text-center shadow-2xl shadow-mk-primary/30 sm:px-16">
-          <BlobShape className="mk-float-slow absolute -left-24 -top-32 h-96 w-96 opacity-30" color="#b08d57" />
+          <BlobShape className="mk-float-slow absolute -left-24 -top-32 h-96 w-96 opacity-30" color="#5b7a99" />
           <BlobShape className="mk-float absolute -bottom-40 -right-20 h-[28rem] w-[28rem] opacity-25" color="#a9b8ad" />
           <div className="mk-grid absolute inset-0 opacity-20 invert" aria-hidden />
           <div className="relative">
@@ -24,7 +24,7 @@ export default function CtaBanner({
               <Magnetic>
                 <Link
                   href="/contact"
-                  className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-semibold text-mk-text shadow-xl transition hover:bg-stone-50"
+                  className="group inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-semibold text-mk-text shadow-xl transition hover:bg-slate-50"
                 >
                   Book a free demo
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden />

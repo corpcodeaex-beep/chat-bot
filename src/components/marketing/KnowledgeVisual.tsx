@@ -13,7 +13,7 @@ export default function KnowledgeVisual() {
       <ul className="space-y-3">
         {SOURCES.map((s) => (
           <li key={s.name} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-50 text-slate-600">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-600">
               <s.icon className="h-4 w-4" />
             </span>
             <div className="min-w-0">

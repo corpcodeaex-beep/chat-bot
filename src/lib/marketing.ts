@@ -250,7 +250,7 @@ export const INDUSTRIES: Industry[] = [
     slug: "online-stores",
     name: "Online stores",
     icon: "store",
-    color: "#8a6a3c",
+    color: "#3f4a5a",
     business: "Style Hub PK",
     headline: "Sell more with instant answers on sizes, delivery and returns",
     subheadline: "Your assistant helps shoppers choose, explains delivery and returns, and takes the order.",

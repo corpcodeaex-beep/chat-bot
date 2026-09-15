@@ -65,7 +65,7 @@ export default function FeaturesPage() {
       </section>
 
       <section className="relative overflow-hidden bg-mk-background py-24">
-        <WaveDivider fill="#f7f5f0" flip className="absolute inset-x-0 top-0" />
+        <WaveDivider fill="#f7f8fa" flip className="absolute inset-x-0 top-0" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 pt-6 sm:px-6 lg:grid-cols-2">
           <Reveal>
             <SectionHeading
@@ -157,7 +157,7 @@ export default function FeaturesPage() {
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-linear-to-b from-white via-stone-50 to-mk-background py-24">
+      <section className="relative overflow-hidden bg-linear-to-b from-white via-slate-50 to-mk-background py-24">
         <BlobField variant="corner" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>

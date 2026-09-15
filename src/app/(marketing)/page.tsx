@@ -126,7 +126,7 @@ export default function HomePage() {
             </ParallaxLayer>
             <ParallaxLayer depth={56} className="absolute -bottom-2 -right-12 hidden sm:block">
               <div className="mk-float flex items-center gap-3 rounded-2xl border border-white bg-white/90 p-3 pr-5 shadow-2xl shadow-slate-900/15 backdrop-blur" aria-hidden>
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-stone-100 text-mk-primary">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-mk-primary">
                   <Languages className="h-4 w-4" />
                 </span>
                 <div>
@@ -264,7 +264,7 @@ export default function HomePage() {
 
       {/* Knowledge */}
       <section className="relative overflow-hidden bg-mk-background py-24">
-        <WaveDivider fill="#f7f5f0" flip className="absolute inset-x-0 top-0" />
+        <WaveDivider fill="#f7f8fa" flip className="absolute inset-x-0 top-0" />
         <div className="relative mx-auto grid max-w-7xl items-center gap-14 px-4 pt-6 sm:px-6 lg:grid-cols-2">
           <Reveal>
             <SectionHeading
@@ -309,7 +309,7 @@ export default function HomePage() {
       </section>
 
       {/* Dashboard with scroll-driven 3D */}
-      <section className="relative overflow-hidden bg-linear-to-b from-white via-stone-50 to-mk-background py-24">
+      <section className="relative overflow-hidden bg-linear-to-b from-white via-slate-50 to-mk-background py-24">
         <BlobField variant="corner" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>

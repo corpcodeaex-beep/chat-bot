@@ -88,7 +88,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
             </ParallaxLayer>
           </Reveal>
         </div>
-        <WaveDivider fill="#f7f5f0" />
+        <WaveDivider fill="#f7f8fa" />
       </ParallaxScene>
 
       <section className="relative overflow-hidden bg-mk-background py-24">

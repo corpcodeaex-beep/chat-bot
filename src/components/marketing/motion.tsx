@@ -94,7 +94,7 @@ export function TextReveal({ text, highlight = [], className }: { text: string; 
           <span key={i} className="inline-block overflow-hidden pb-[0.14em] align-bottom">
             <motion.span
               className={`inline-block ${
-                highlight.includes(word) ? "bg-linear-to-r from-[#8a6a3c] via-mk-accent to-[#7a5c32] bg-clip-text text-transparent" : ""
+                highlight.includes(word) ? "bg-linear-to-r from-mk-primary via-[#3d5a80] to-mk-accent bg-clip-text text-transparent" : ""
               }`}
               variants={{ hidden: { y: "105%", opacity: 0 }, show: { y: "0%", opacity: 1, transition: { duration: 0.8, ease: EASE } } }}
             >

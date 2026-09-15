@@ -309,9 +309,10 @@ The website was redesigned to feel 3D and animated, in a light and clean theme. 
   - buttons are magnetic, and sections fade and stagger in
   - a line draws itself under "how it works", numbers count up, and a progress bar sits at the top of the page
 - **Backgrounds (Haikei style):** layered SVG waves between sections and blurred blob shapes, in `src/components/marketing/Backgrounds.tsx`.
-- **Colours (Realtime Colors style):** one elegant palette as `mk-*` tokens in `globals.css`: ink text `#1a1f2b`, warm ivory background `#f7f5f0`, deep navy primary `#1e2a3a`, sand secondary `#e8e1d3`, champagne gold accent `#b08d57`, sage `#a9b8ad`.
+- **Colours (Realtime Colors style):** one elegant palette as `mk-*` tokens in `globals.css`: ink text `#1a1f2b`, cool off-white background `#f7f8fa`, deep navy primary `#1e2a3a`, cool grey-blue secondary `#e3e8ef`, steel blue accent `#5b7a99`, sage `#a9b8ad`.
+  - An earlier gold and sand version was also removed at the user's request, so there is no gold anywhere in the app.
   - The first purple and pink version was replaced at the user's request.
-  - Industry colours were muted to match: teal, forest, copper, slate blue, bronze and taupe.
+  - Industry colours were muted to match: teal, forest, copper, slate blue, charcoal and taupe.
 - **Pages:** home, features, pricing, industries, all 6 industry pages and contact use the new style. Inner pages share a `PageHero`.
 - **Shared parts:** header, footer, section headings, pricing cards and the call-to-action banner were restyled.
 - **Accessibility:** all motion follows the visitor's "reduce motion" setting, and the word-by-word headlines keep the full text for screen readers.

@@ -78,7 +78,7 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
         </div>
 
         <Reveal delay={0.15} y={40} className="relative">
-          <BlobShape className="mk-float-slow absolute -right-20 -top-16 h-80 w-80 opacity-50" color="#b08d57" />
+          <BlobShape className="mk-float-slow absolute -right-20 -top-16 h-80 w-80 opacity-50" color="#5b7a99" />
           <div className="relative">
             <ContactForm
               industries={INDUSTRIES.map((i) => ({ slug: i.slug, name: i.name }))}

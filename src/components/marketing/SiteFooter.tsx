@@ -6,7 +6,7 @@ import { currentYear, INDUSTRIES, SITE } from "@/lib/marketing";
 
 export default function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden border-t border-mk-secondary/50 bg-linear-to-b from-mk-background to-stone-50">
+    <footer className="relative overflow-hidden border-t border-mk-secondary/50 bg-linear-to-b from-mk-background to-slate-50">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
         <div className="space-y-4">
           <Link href="/" className="flex items-center gap-2 text-lg font-semibold text-slate-900">
