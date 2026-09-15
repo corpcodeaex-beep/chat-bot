@@ -3,6 +3,8 @@ import { providerStatus } from "./ai";
 import { getRecentAiFailure } from "./ai/failures";
 import { getClient } from "./clients";
 import { getStats } from "./db";
+import { emailConfigured } from "./email";
+import { getUnsentResetRequests } from "./password-reset";
 import { formatDay, formatNumber } from "./format";
 import { getPlan } from "./plans";
 import type { Viewer } from "./session";
@@ -72,6 +74,17 @@ async function adminAlerts(): Promise<Alert[]> {
       title: `${kind.label}: ${item.title}`,
       detail: item.subtitle ? `${item.subtitle}. ${item.detail}` : item.detail,
       href: item.href,
+    });
+  }
+  // Password reset requests that could not be emailed (no email service set up).
+  for (const request of await getUnsentResetRequests().catch(() => [])) {
+    alerts.push({
+      id: `reset-request:${request.clientId}:${request.at}`,
+      severity: "warning",
+      title: `${request.name} asked for a password reset`,
+      detail: `No email was sent${emailConfigured() ? " (sending failed)" : " because email sending is not set up (RESEND_API_KEY)"}. Set a new password on the company page and share it with them.`,
+      href: `/dashboard/companies/${request.clientId}`,
+      at: request.at,
     });
   }
   // Company chats are private, so "needs a human" alerts go to the company only.

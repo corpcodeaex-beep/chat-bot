@@ -106,6 +106,17 @@ export const SCHEMA: string[] = [
     PRIMARY KEY (bot_id, month)
   )`,
 
+  // ---- Company password resets (only a hash of the emailed token is stored) ----
+  `CREATE TABLE IF NOT EXISTS password_resets (
+    token_hash text PRIMARY KEY,
+    client_id text NOT NULL REFERENCES clients(id) ON DELETE CASCADE,
+    expires_at timestamptz NOT NULL,
+    used_at timestamptz,
+    email_sent boolean NOT NULL DEFAULT false,
+    created_at timestamptz NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS password_resets_client_idx ON password_resets (client_id, created_at DESC)`,
+
   // ---- AI provider failures (shown to the admin) ----
   `CREATE TABLE IF NOT EXISTS ai_failures (
     id bigserial PRIMARY KEY,

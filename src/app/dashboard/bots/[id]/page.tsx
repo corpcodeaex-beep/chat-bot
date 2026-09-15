@@ -10,7 +10,15 @@ import { embeddingsAvailable } from "@/lib/rag/embed";
 import { EMPTY_DOCUMENT_COUNTS, getDocumentCounts, listSources } from "@/lib/rag/store";
 import { pageViewer } from "@/lib/session";
 import { appUrlFromHeaders } from "@/lib/url";
-import { accessState, effectiveLimit, getCompanyUsageHistory, getLimitUsage, getMonthUsage, getUsageHistory } from "@/lib/usage";
+import {
+  accessState,
+  effectiveLimit,
+  getCompanyUsageHistory,
+  getLimitUsage,
+  getMonthUsage,
+  getUsageHistory,
+  type UsageMonth,
+} from "@/lib/usage";
 import { getWhatsAppAccount } from "@/lib/whatsapp";
 
 export default async function BotPage({ params }: PageProps<"/dashboard/bots/[id]">) {
@@ -72,6 +80,9 @@ export default async function BotPage({ params }: PageProps<"/dashboard/bots/[id
     bot.clientId ? getClient(bot.clientId) : Promise.resolve(null),
   ]);
 
+  // AI token numbers are for the admin only; they are not even sent to company browsers.
+  const hideTokens = (u: UsageMonth): UsageMonth => (isAdmin ? u : { ...u, inputTokens: 0, outputTokens: 0 });
+
   return (
     <BotWorkspace
       bot={bot}
@@ -81,8 +92,8 @@ export default async function BotPage({ params }: PageProps<"/dashboard/bots/[id
       sources={sources}
       smartSearch={embeddingsAvailable()}
       appUrl={appUrl}
-      usage={history}
-      currentUsage={current}
+      usage={history.map(hideTokens)}
+      currentUsage={hideTokens(current)}
       botReplies={botUsage.messages}
       limit={effectiveLimit(bot)}
       access={accessState(bot)}

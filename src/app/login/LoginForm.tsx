@@ -1,6 +1,7 @@
 "use client";
 
 import { LogIn } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BRAND } from "@/lib/brand";
@@ -56,6 +57,11 @@ export default function LoginForm({ next }: { next: string }) {
           placeholder="Password"
           className={input}
         />
+        <div className="-mt-2 text-right">
+          <Link href="/forgot-password" className="text-xs text-indigo-700 hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           disabled={loading || !email || !password}

@@ -247,6 +247,29 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 
 **Login page:** the "Admin login: admin / admin123" hint was removed, so the login page no longer reveals the admin credentials.
 
+### Step 11: Forgot password, hidden AI tokens, activity charts
+
+**Forgot password (companies):**
+- The login page has a **Forgot password?** link to `/forgot-password`, where the company enters its email.
+- The company gets an email with a **one-time link valid for 1 hour** (`/reset-password?token=...`) to choose a new password. All old logins are signed out.
+- **Security:**
+  - The reply is the same whether or not the email exists.
+  - Only one request per company per minute, and 5 per IP per 10 minutes.
+  - Only a hash of the link token is stored.
+  - A link works once, and older open links stop working after a reset.
+- **Email service:** emails are sent with **Resend** (`RESEND_API_KEY`, optional `EMAIL_FROM` on a verified domain).
+  - Without it, no email is sent and the **admin gets a notification** "Company X asked for a password reset", so they can set a password on the company page.
+  - The notification disappears once the password is reset.
+- The admin login is not affected (the admin password is set in the environment).
+
+**AI tokens hidden from companies:** input/output token numbers on the Plan & usage tab are shown to the admin only. For companies they are not even sent to the browser.
+
+**Activity charts (company dashboard):**
+- "Chats per day" and "Leads per day", with a **Last 7 / 30 / 90 days** switch.
+- Totals, a tooltip on hover or keyboard arrows, and a "Show as table" view.
+- The company's own test chats from the dashboard are not counted. Days follow Pakistan time.
+- Bar colour `#2a78d6` passed the chart palette validator on white.
+
 ---
 
 ## 4. Testing done
@@ -280,6 +303,10 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 | Admin sees company bot summary only (documents count, no notes/test chat/leads); API refuses company bot details, leads, knowledge list/search and setup edits (403) | Passed |
 | Admin still manages WhatsApp and plan for company bots; admin's own demo bot keeps full access | Passed |
 | Company still sees its own knowledge, leads and full workspace; only admin can clear AI failure alerts | Passed |
+| Forgot password: same reply for real/unknown email, 1 request per minute, only token hashes stored, admin notified without email service | Passed |
+| Reset link: form shown, short password rejected, reset works, link single-use, expired link refused, old sessions and old password stop working | Passed |
+| AI token numbers not shown or sent to companies | Passed |
+| Company dashboard shows chats/leads per day charts with range switch and table; a real chat is counted | Passed |
 | TypeScript check and lint | Clean |
 
 **Not yet tested:** real WhatsApp messages through Meta. This needs the app deployed online.

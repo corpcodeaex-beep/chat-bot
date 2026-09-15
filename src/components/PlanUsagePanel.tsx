@@ -93,14 +93,18 @@ export default function PlanUsagePanel({ bot, isAdmin, usage, current, botReplie
               <dt className="text-slate-500">Not answered</dt>
               <dd className="font-semibold">{formatNumber(current.blocked)}</dd>
             </div>
-            <div>
-              <dt className="text-slate-500">AI input tokens</dt>
-              <dd className="font-semibold">{formatNumber(current.inputTokens)}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-500">AI output tokens</dt>
-              <dd className="font-semibold">{formatNumber(current.outputTokens)}</dd>
-            </div>
+            {isAdmin && (
+              <>
+                <div>
+                  <dt className="text-slate-500">AI input tokens</dt>
+                  <dd className="font-semibold">{formatNumber(current.inputTokens)}</dd>
+                </div>
+                <div>
+                  <dt className="text-slate-500">AI output tokens</dt>
+                  <dd className="font-semibold">{formatNumber(current.outputTokens)}</dd>
+                </div>
+              </>
+            )}
           </dl>
         </section>
 
@@ -116,7 +120,7 @@ export default function PlanUsagePanel({ bot, isAdmin, usage, current, botReplie
                     <th className="px-5 py-2 font-medium">Month</th>
                     <th className="px-5 py-2 font-medium">Replies</th>
                     <th className="px-5 py-2 font-medium">Not answered</th>
-                    <th className="px-5 py-2 font-medium">Tokens (in / out)</th>
+                    {isAdmin && <th className="px-5 py-2 font-medium">Tokens (in / out)</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -125,9 +129,11 @@ export default function PlanUsagePanel({ bot, isAdmin, usage, current, botReplie
                       <td className="px-5 py-2">{u.month}</td>
                       <td className="px-5 py-2">{formatNumber(u.messages)}</td>
                       <td className="px-5 py-2">{formatNumber(u.blocked)}</td>
-                      <td className="px-5 py-2 text-slate-600">
-                        {formatNumber(u.inputTokens)} / {formatNumber(u.outputTokens)}
-                      </td>
+                      {isAdmin && (
+                        <td className="px-5 py-2 text-slate-600">
+                          {formatNumber(u.inputTokens)} / {formatNumber(u.outputTokens)}
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

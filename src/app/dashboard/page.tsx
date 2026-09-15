@@ -1,6 +1,8 @@
 import { Lock, Plus } from "lucide-react";
 import Link from "next/link";
+import ActivityCharts from "@/components/ActivityCharts";
 import AdminOverview from "@/components/admin/AdminOverview";
+import { getCompanyActivity } from "@/lib/activity";
 import BotCards from "@/components/BotCards";
 import PlanFeatures from "@/components/PlanFeatures";
 import UsageBar from "@/components/UsageBar";
@@ -15,12 +17,13 @@ export default async function DashboardPage() {
   const viewer = await pageViewer();
   if (viewer.role === "admin") return <AdminOverview />;
 
-  const [bots, stats, leads, company, usage] = await Promise.all([
+  const [bots, stats, leads, company, usage, activity] = await Promise.all([
     listBots(viewer.clientId),
     getStats(viewer.clientId),
     listLeads(undefined, 10, viewer.clientId),
     getClient(viewer.clientId),
     getCompanyMonthUsage(viewer.clientId),
+    getCompanyActivity(viewer.clientId),
   ]);
   const plan = getPlan(company?.plan ?? "standard");
   const botLimitReached = plan.maxBots !== null && bots.length >= plan.maxBots;
@@ -60,6 +63,8 @@ export default async function DashboardPage() {
           <p className="text-xs text-slate-500">Shared by all your assistants. It resets at the start of each month.</p>
         </div>
       </section>
+
+      <ActivityCharts activity={activity} />
 
       <section>
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
