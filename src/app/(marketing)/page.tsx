@@ -194,7 +194,7 @@ export default function HomePage() {
             {PAINS.map((pain) => (
               <StaggerItem key={pain.title}>
                 <Tilt max={6} className="h-full">
-                  <Spotlight color="rgba(255, 111, 177, 0.12)" className="h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+                  <Spotlight color="rgba(91, 122, 153, 0.12)" className="h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
                     <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
                       <pain.icon className="h-5 w-5" aria-hidden />
                     </span>

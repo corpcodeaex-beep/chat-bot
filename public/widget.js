@@ -11,7 +11,9 @@
   window.__chatdeskLoaded = true;
 
   var origin = new URL(script.src).origin;
-  var color = script.getAttribute("data-color") || "#4f46e5";
+  // Each company picks its own brand color in the dashboard; data-color on the script tag overrides it.
+  var colorOverride = script.getAttribute("data-color");
+  var color = colorOverride || "#1e2a3a";
   var isOpen = false;
   var frame = null;
 
@@ -68,11 +70,24 @@
     if (event.origin === origin && event.data === "chatdesk:close") toggle(false);
   });
 
-  fetch(origin + "/api/bots/" + encodeURIComponent(botId))
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (bot) { if (bot && bot.color && !script.getAttribute("data-color")) button.style.background = bot.color; })
-    .catch(function () {});
+  // Show the bubble only once the company's own color is known, so it never flashes a default color.
+  var shown = false;
+  function show() {
+    if (shown) return;
+    shown = true;
+    if (document.body) document.body.appendChild(button);
+    else document.addEventListener("DOMContentLoaded", function () { document.body.appendChild(button); });
+  }
 
-  if (document.body) document.body.appendChild(button);
-  else document.addEventListener("DOMContentLoaded", function () { document.body.appendChild(button); });
+  if (colorOverride) show();
+  else {
+    setTimeout(show, 4000); // slow network: show with the fallback color
+    fetch(origin + "/api/bots/" + encodeURIComponent(botId))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (bot) {
+        if (bot && /^#[0-9a-f]{6}$/i.test(bot.color)) button.style.background = bot.color;
+        show();
+      })
+      .catch(show);
+  }
 })();

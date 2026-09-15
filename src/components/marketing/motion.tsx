@@ -145,7 +145,7 @@ export function Tilt({ children, className, max = 8, scale = 1.02 }: { children:
 }
 
 /** Soft light that follows the cursor across a card. */
-export function Spotlight({ children, className = "", color = "rgba(90, 77, 255, 0.13)" }: { children: ReactNode; className?: string; color?: string }) {
+export function Spotlight({ children, className = "", color = "rgba(30, 42, 58, 0.08)" }: { children: ReactNode; className?: string; color?: string }) {
   const mx = useMotionValue(-300);
   const my = useMotionValue(-300);
   const background = useMotionTemplate`radial-gradient(280px circle at ${mx}px ${my}px, ${color}, transparent 72%)`;
