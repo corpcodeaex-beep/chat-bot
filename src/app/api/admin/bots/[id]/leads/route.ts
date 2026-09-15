@@ -15,7 +15,7 @@ function csvCell(value: string | undefined) {
 export async function GET(_request: Request, ctx: RouteContext<"/api/admin/bots/[id]/leads">) {
   try {
     const { id } = await ctx.params;
-    const { bot } = await requireBot(id);
+    const { bot } = await requireBot(id, { privateData: true });
     const leads = await listLeads(id);
     const rows = [COLUMNS.join(","), ...leads.map((lead) => COLUMNS.map((c) => csvCell(lead[c])).join(","))];
     const filename = `${bot.businessName.replace(/[^\w-]+/g, "-")}-leads.csv`;

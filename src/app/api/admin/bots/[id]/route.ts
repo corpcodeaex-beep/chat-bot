@@ -7,7 +7,7 @@ import { cleanBotInput } from "@/lib/validate";
 export async function GET(_request: Request, ctx: RouteContext<"/api/admin/bots/[id]">) {
   try {
     const { id } = await ctx.params;
-    const { bot } = await requireBot(id);
+    const { bot } = await requireBot(id, { privateData: true });
     return NextResponse.json({ bot });
   } catch (error) {
     return errorResponse(error);
@@ -18,7 +18,7 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/admin/bots/
 export async function PUT(request: Request, ctx: RouteContext<"/api/admin/bots/[id]">) {
   try {
     const { id } = await ctx.params;
-    await requireBot(id);
+    await requireBot(id, { privateData: true });
     const bot = await updateBot(id, cleanBotInput(await request.json().catch(() => null)));
     return NextResponse.json({ bot });
   } catch (error) {

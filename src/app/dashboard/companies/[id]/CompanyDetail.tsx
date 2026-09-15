@@ -24,7 +24,7 @@ interface CompanyBot {
   access: AccessState;
   trialEndsAt?: string;
   replies: number;
-  leads: number;
+  documents: number;
 }
 
 interface Props {
@@ -163,12 +163,11 @@ export default function CompanyDetail({ company, access, limit, bots, loginUrl, 
 
       {credentials && <CredentialsBox credentials={credentials} loginUrl={loginUrl} onClose={() => setCredentials(null)} />}
 
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-4 md:grid-cols-3">
         {[
           { label: "Bots", value: plan.maxBots === null ? `${company.botCount}` : `${company.botCount} of ${plan.maxBots}`, detail: `${company.activeBots} active` },
           { label: "Replies this month", value: formatNumber(company.repliesThisMonth), detail: limit === null ? "unlimited" : `of ${formatNumber(limit)}` },
-          { label: "Leads", value: formatNumber(company.leadCount), detail: "all time" },
-          { label: "Conversations", value: formatNumber(company.conversationCount), detail: "all time" },
+          { label: "Documents", value: formatNumber(company.documentCount), detail: "files, texts and website pages" },
         ].map((s) => (
           <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-4">
             <div className="text-sm text-slate-500">{s.label}</div>
@@ -242,7 +241,7 @@ export default function CompanyDetail({ company, access, limit, bots, loginUrl, 
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-medium">{b.businessName}</div>
                     <div className="text-xs text-slate-500">
-                      {formatNumber(b.replies)} replies this month · {b.leads} leads
+                      {formatNumber(b.replies)} replies this month · {b.documents} {b.documents === 1 ? "document" : "documents"}
                     </div>
                   </div>
                   {b.access !== "active" && <AccessBadge access={b.access} trialEndsAt={b.trialEndsAt} size="sm" />}

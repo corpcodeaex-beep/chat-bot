@@ -191,7 +191,7 @@ export default function CompaniesManager({ companies, loginUrl, templates, start
                 <th className="px-4 py-2 font-medium">Bots</th>
                 <th className="px-4 py-2 font-medium">Plan</th>
                 <th className="px-4 py-2 text-right font-medium">Replies this month</th>
-                <th className="px-4 py-2 text-right font-medium">Leads</th>
+                <th className="px-4 py-2 text-right font-medium">Documents</th>
                 <th className="px-4 py-2 font-medium">Added</th>
                 <th className="px-4 py-2" />
               </tr>
@@ -217,7 +217,7 @@ export default function CompaniesManager({ companies, loginUrl, templates, start
                     {c.trialEndsAt && <div className="text-xs text-slate-500">trial until {formatDay(c.trialEndsAt)}</div>}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">{formatNumber(c.repliesThisMonth)}</td>
-                  <td className="px-4 py-3 text-right tabular-nums">{formatNumber(c.leadCount)}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">{formatNumber(c.documentCount)}</td>
                   <td className="whitespace-nowrap px-4 py-3 text-slate-500">{formatDay(c.createdAt)}</td>
                   <td className="px-4 py-3 text-right">
                     <Link href={`/dashboard/companies/${c.id}`} className="inline-flex items-center gap-1 text-indigo-700 hover:underline">

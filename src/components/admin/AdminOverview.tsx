@@ -1,19 +1,11 @@
-import { CircleCheck, Plus, TriangleAlert, UserPlus, Users } from "lucide-react";
+import { Plus, UserPlus, Users } from "lucide-react";
 import Link from "next/link";
 import BarList from "./BarList";
-import { providerStatus } from "@/lib/ai";
-import { getPlatformOverview, type AttentionKind } from "@/lib/admin-stats";
-import { getRecentAiFailure } from "@/lib/ai/failures";
-import { formatDate, formatMonth, formatNumber } from "@/lib/format";
+import { getPlatformOverview } from "@/lib/admin-stats";
+import { formatMonth, formatNumber } from "@/lib/format";
 import { PLAN_KEYS, PLANS, planPriceLabel } from "@/lib/plans";
 
-const SEVERITY: Record<AttentionKind, { label: string; tone: string }> = {
-  limit_reached: { label: "Limit reached", tone: "text-red-700 bg-red-50" },
-  trial_ended: { label: "Trial ended", tone: "text-red-700 bg-red-50" },
-  whatsapp_error: { label: "WhatsApp error", tone: "text-red-700 bg-red-50" },
-  near_limit: { label: "Near limit", tone: "text-amber-800 bg-amber-50" },
-  trial_ending: { label: "Trial ending", tone: "text-amber-800 bg-amber-50" },
-};
+// Alerts (AI failures, limits, trials, WhatsApp errors) are shown in the notification bell.
 
 function StatTile({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
@@ -26,33 +18,10 @@ function StatTile({ label, value, detail }: { label: string; value: string; deta
 }
 
 export default async function AdminOverview() {
-  const [o, provider, failure] = await Promise.all([getPlatformOverview(), Promise.resolve(providerStatus()), getRecentAiFailure()]);
+  const o = await getPlatformOverview();
 
   return (
     <div className="space-y-8">
-      {provider.warning && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{provider.warning}</div>}
-      {failure && (
-        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
-          <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-          <div className="space-y-1">
-            <p>
-              <b>AI failed {failure.last24h} {failure.last24h === 1 ? "time" : "times"} in the last 24 hours</b> (latest: {failure.provider},{" "}
-              {formatDate(failure.at)}). Customers were answered with {provider.fallbacks.join(", then ")} instead.
-            </p>
-            <p className="text-red-700">{failure.message}</p>
-            <p>
-              Fix: if it says quota, the free Gemini limit is used up. Turn on billing in Google AI Studio, or add a free{" "}
-              <code>GROQ_API_KEY</code> to <code>.env.local</code> as a backup AI.
-            </p>
-          </div>
-        </div>
-      )}
-      {provider.active === "demo" && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <b>Demo mode (no AI key).</b> Add a <code>GEMINI_API_KEY</code> to <code>.env.local</code> for real AI answers.
-        </div>
-      )}
-
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Admin overview</h1>
@@ -99,43 +68,11 @@ export default async function AdminOverview() {
             value={formatNumber(o.monthTotals.replies)}
             detail={`${formatNumber(o.monthTotals.inputTokens)} in / ${formatNumber(o.monthTotals.outputTokens)} out tokens · ${o.monthTotals.blocked} not answered`}
           />
-          <StatTile
-            label="Leads"
-            value={formatNumber(o.leads.total)}
-            detail={`${o.leads.thisWeek} this week · ${o.needsHuman} chats need a human`}
-          />
+          <StatTile label="Documents" value={formatNumber(o.documents)} detail="Files, texts and website pages across all bots" />
         </div>
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 bg-white p-5">
-          <h2 className="mb-4 font-semibold">Needs attention</h2>
-          {o.attention.length === 0 ? (
-            <p className="flex items-center gap-2 py-4 text-sm text-slate-600">
-              <CircleCheck className="h-4 w-4 text-emerald-600" aria-hidden />
-              Nothing needs attention right now.
-            </p>
-          ) : (
-            <ul className="divide-y divide-slate-100">
-              {o.attention.slice(0, 8).map((item) => (
-                <li key={item.key} className="flex items-start gap-3 py-2.5">
-                  <span className={`mt-0.5 inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${SEVERITY[item.kind].tone}`}>
-                    <TriangleAlert className="h-3.5 w-3.5" aria-hidden />
-                    {SEVERITY[item.kind].label}
-                  </span>
-                  <div className="min-w-0 text-sm">
-                    <Link href={item.href} className="font-medium text-slate-900 hover:underline">
-                      {item.title}
-                    </Link>
-                    {item.subtitle && <span className="text-slate-500"> · {item.subtitle}</span>}
-                    <div className="text-slate-600">{item.detail}</div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
         <section className="rounded-xl border border-slate-200 bg-white p-5">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold">Top companies by replies</h2>
@@ -156,21 +93,21 @@ export default async function AdminOverview() {
             }))}
           />
         </section>
-      </div>
 
-      <section className="rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="mb-4 font-semibold">Companies by plan</h2>
-        <BarList
-          unit="companies"
-          empty="No companies yet."
-          items={PLAN_KEYS.map((key) => ({ key, label: PLANS[key].label, note: planPriceLabel(PLANS[key]), value: o.plans[key] }))}
-        />
-        {o.bots.unassigned > 0 && (
-          <p className="mt-4 text-xs text-slate-500">
-            {o.bots.unassigned} demo {o.bots.unassigned === 1 ? "bot is" : "bots are"} not linked to a company (not counted in revenue).
-          </p>
-        )}
-      </section>
+        <section className="rounded-xl border border-slate-200 bg-white p-5">
+          <h2 className="mb-4 font-semibold">Companies by plan</h2>
+          <BarList
+            unit="companies"
+            empty="No companies yet."
+            items={PLAN_KEYS.map((key) => ({ key, label: PLANS[key].label, note: planPriceLabel(PLANS[key]), value: o.plans[key] }))}
+          />
+          {o.bots.unassigned > 0 && (
+            <p className="mt-4 text-xs text-slate-500">
+              {o.bots.unassigned} demo {o.bots.unassigned === 1 ? "bot is" : "bots are"} not linked to a company (not counted in revenue).
+            </p>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

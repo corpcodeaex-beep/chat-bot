@@ -16,6 +16,12 @@ export async function recordAiFailure(provider: string, message: string) {
   await sql.query("DELETE FROM ai_failures WHERE created_at < now() - interval '30 days'");
 }
 
+/** Removes all saved failures (the admin dismissed the alert). */
+export async function clearAiFailures() {
+  const sql = await db();
+  return (await sql.query("DELETE FROM ai_failures RETURNING id")).length;
+}
+
 export async function getRecentAiFailure(): Promise<AiFailureSummary | null> {
   const sql = await db();
   const [row] = await sql.query(

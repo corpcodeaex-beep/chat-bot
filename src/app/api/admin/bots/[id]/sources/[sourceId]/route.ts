@@ -6,7 +6,7 @@ import { requireBot } from "@/lib/session";
 export async function DELETE(_request: Request, ctx: RouteContext<"/api/admin/bots/[id]/sources/[sourceId]">) {
   try {
     const { id, sourceId } = await ctx.params;
-    await requireBot(id);
+    await requireBot(id, { privateData: true });
     return (await removeSource(id, sourceId))
       ? NextResponse.json({ ok: true })
       : NextResponse.json({ error: "Source not found" }, { status: 404 });

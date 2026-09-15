@@ -216,9 +216,36 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 - Through the app it answered contact, services (Roman Urdu) and address questions correctly from the bots' knowledge, with no failures.
 - Set `GEMINI_MODEL=gemini-3.6-flash` for smarter but slower answers.
 
+**Groq backup AI** (`GROQ_API_KEY` added locally and in production):
+- The old default model `llama-3.3-70b-versatile` no longer exists on Groq, so the default is now `qwen/qwen3.8-27b`. It keeps the customer's language (Roman Urdu stays Roman Urdu) and uses few tokens. Other models available: `openai/gpt-oss-20b`, `openai/gpt-oss-120b`.
+- Free plan limits, per model: **1,000 requests/day**, **8,000 tokens/minute** and, for Qwen, **1,000 output tokens/minute**.
+- Groq counts the `max_tokens` setting against the output limit up front. It was 2,048, so every request was rejected as "too large". It is now 512, which is plenty for chat replies of about 60–150 tokens.
+- Each chat reply uses about 1,600–1,800 input tokens (instructions + knowledge), so Groq alone handles roughly 4 chats per minute.
+- Tested with Gemini forced to fail: Groq answered both bots correctly (Roman Urdu contact details for Codeaex, real product names for Poultry).
+
 **To avoid quota problems for real clients:**
 - Turn on billing in Google AI Studio (paid tier, much higher limits), or
 - Add a free `GROQ_API_KEY` as a backup AI.
+
+### Step 10: Notifications, company privacy, cleaner login
+
+**Notification bell** (top bar, admin and companies):
+- Alerts moved out of the page into a bell with a count badge: red if something is critical, amber for warnings.
+- **Admin alerts:** AI failures (with a **Clear** button), AI settings problems, no-AI-key mode, companies at or near their reply limit, trials ending or ended, WhatsApp errors.
+- **Company alerts:** their own reply limit (80% and 100%), trial ending or ended, chats that need a human.
+- **Mark all as read** hides the badge until something new happens. Alerts disappear by themselves once the problem is fixed.
+- The big AI failure banner and the "Needs attention" card were removed from the Overview.
+
+**Company privacy:** the admin sees only a **summary** of a company's bot.
+- **Shown:** name, business type, company, plan, status, reply language, skills turned on, replies this month, WhatsApp status, created date, and the **number of documents**.
+- **Document count:** each file or pasted text is 1 document, and **each imported website page is 1 document**.
+- **Hidden:** the company's knowledge (notes, files, website content), leads and chats. The Setup, Knowledge, Test chat, Leads and Chats tabs are not shown.
+- **Enforced on the server:** those API routes return 403 for the admin on company bots.
+- **Still available to the admin:** WhatsApp connection, Plan & usage (company link, pause), and deleting the bot.
+- **Admin's own demo bots** (not linked to a company) keep the full workspace.
+- **Company-level pages:** the admin Companies table, company page and All bots cards show documents instead of leads and chats. The Overview "Leads" tile became "Documents". The "chats need a human" alert goes to the company only.
+
+**Login page:** the "Admin login: admin / admin123" hint was removed, so the login page no longer reveals the admin credentials.
 
 ---
 
@@ -249,6 +276,10 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 | Gemini forced to fail: customers still answered (HTTP 200) from knowledge; contact questions (English + Roman Urdu) return real phones, emails and exact address | Passed |
 | Services/pricing questions answered with short relevant bullets when AI fails | Passed |
 | AI failures saved and shown on Overview ("AI failed N times in the last 24 hours"); real Gemini 429 quota errors recorded | Passed |
+| Login page no longer shows admin credentials; notification bell for admin and companies; old banners removed | Passed |
+| Admin sees company bot summary only (documents count, no notes/test chat/leads); API refuses company bot details, leads, knowledge list/search and setup edits (403) | Passed |
+| Admin still manages WhatsApp and plan for company bots; admin's own demo bot keeps full access | Passed |
+| Company still sees its own knowledge, leads and full workspace; only admin can clear AI failure alerts | Passed |
 | TypeScript check and lint | Clean |
 
 **Not yet tested:** real WhatsApp messages through Meta. This needs the app deployed online.

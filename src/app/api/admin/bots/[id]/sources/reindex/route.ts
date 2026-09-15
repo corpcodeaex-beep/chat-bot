@@ -7,7 +7,7 @@ import { requireBot } from "@/lib/session";
 export async function POST(_request: Request, ctx: RouteContext<"/api/admin/bots/[id]/sources/reindex">) {
   try {
     const { id } = await ctx.params;
-    await requireBot(id);
+    await requireBot(id, { privateData: true });
     return NextResponse.json(await reindex(id));
   } catch (error) {
     if (error instanceof HttpError) return errorResponse(error);

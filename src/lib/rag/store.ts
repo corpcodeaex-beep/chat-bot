@@ -135,6 +135,41 @@ export async function hasEmbeddings(botId: string) {
   return Boolean(row?.has);
 }
 
+export interface DocumentCounts {
+  /** Files + pasted texts + website pages (every imported web page is one document). */
+  documents: number;
+  files: number;
+  texts: number;
+  websites: number;
+  websitePages: number;
+}
+
+export const EMPTY_DOCUMENT_COUNTS: DocumentCounts = { documents: 0, files: 0, texts: 0, websites: 0, websitePages: 0 };
+
+/** Document counts per bot (all bots, or the given ones). */
+export async function getDocumentCounts(botIds?: string[]) {
+  const sql = await db();
+  const rows = await sql.query(
+    `SELECT bot_id,
+       count(*) FILTER (WHERE type = 'file')::int AS files,
+       count(*) FILTER (WHERE type = 'text')::int AS texts,
+       count(*) FILTER (WHERE type = 'website')::int AS websites,
+       COALESCE(sum(COALESCE(pages, 1)) FILTER (WHERE type = 'website'), 0)::int AS website_pages
+     FROM knowledge_sources
+     WHERE ($1::text[] IS NULL OR bot_id = ANY($1::text[]))
+     GROUP BY bot_id`,
+    [botIds ?? null],
+  );
+  return new Map<string, DocumentCounts>(
+    rows.map((r) => {
+      const files = Number(r.files);
+      const texts = Number(r.texts);
+      const websitePages = Number(r.website_pages);
+      return [String(r.bot_id), { files, texts, websites: Number(r.websites), websitePages, documents: files + texts + websitePages }];
+    }),
+  );
+}
+
 export async function getChunks(ids: string[]) {
   if (!ids.length) return [];
   const sql = await db();

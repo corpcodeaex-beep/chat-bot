@@ -31,7 +31,8 @@ export async function getPlatformOverview(now = new Date()) {
       (SELECT count(*) FROM leads)::int AS leads,
       (SELECT count(*) FROM leads WHERE created_at > now() - interval '7 days')::int AS leads_week,
       (SELECT count(*) FROM conversations)::int AS conversations,
-      (SELECT count(*) FROM conversations WHERE needs_human)::int AS needs_human`),
+      (SELECT count(*) FROM conversations WHERE needs_human)::int AS needs_human,
+      COALESCE((SELECT sum(CASE WHEN type = 'website' THEN COALESCE(pages, 1) ELSE 1 END) FROM knowledge_sources), 0)::int AS documents`),
     sql.query("SELECT bot_id, last_error FROM whatsapp_accounts WHERE last_error IS NOT NULL"),
   ]);
 
@@ -118,6 +119,8 @@ export async function getPlatformOverview(now = new Date()) {
     revenue,
     leads: { total: Number(counts.leads), thisWeek: Number(counts.leads_week) },
     conversations: Number(counts.conversations),
+    /** Files + texts + website pages across all bots. */
+    documents: Number(counts.documents),
     needsHuman: Number(counts.needs_human),
     topCompanies: [...companies]
       .sort((a, b) => b.repliesThisMonth - a.repliesThisMonth)

@@ -7,7 +7,7 @@ import { requireBot } from "@/lib/session";
 export async function POST(request: Request, ctx: RouteContext<"/api/admin/bots/[id]/search">) {
   try {
     const { id } = await ctx.params;
-    await requireBot(id);
+    await requireBot(id, { privateData: true });
     const body = await request.json().catch(() => null);
     const query = typeof body?.query === "string" ? body.query.slice(0, 500) : "";
     if (!query.trim()) return NextResponse.json({ error: "Type a question" }, { status: 400 });

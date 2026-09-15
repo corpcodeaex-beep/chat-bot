@@ -29,6 +29,8 @@ export interface CompanySummary extends Client {
   repliesThisMonth: number;
   leadCount: number;
   conversationCount: number;
+  /** Files + texts + website pages across the company's bots. */
+  documentCount: number;
 }
 
 const toClient = (r: Row): Client => ({
@@ -50,6 +52,7 @@ const toSummary = (r: Row): CompanySummary => ({
   repliesThisMonth: Number(r.replies_this_month ?? 0),
   leadCount: Number(r.lead_count ?? 0),
   conversationCount: Number(r.conversation_count ?? 0),
+  documentCount: Number(r.document_count ?? 0),
 });
 
 const COLUMNS = "c.id, c.name, c.email, c.status, c.plan, c.trial_ends_at, c.message_limit, c.session_version, c.created_at";
@@ -61,7 +64,9 @@ const SUMMARY_SELECT = `SELECT ${COLUMNS},
   (SELECT count(*) FROM bots b WHERE b.client_id = c.id AND b.status = 'active')::int AS active_bots,
   COALESCE((SELECT sum(u.messages) FROM usage_monthly u JOIN bots b ON b.id = u.bot_id WHERE b.client_id = c.id AND u.month = $1), 0)::int AS replies_this_month,
   (SELECT count(*) FROM leads l JOIN bots b ON b.id = l.bot_id WHERE b.client_id = c.id)::int AS lead_count,
-  (SELECT count(*) FROM conversations v JOIN bots b ON b.id = v.bot_id WHERE b.client_id = c.id)::int AS conversation_count
+  (SELECT count(*) FROM conversations v JOIN bots b ON b.id = v.bot_id WHERE b.client_id = c.id)::int AS conversation_count,
+  COALESCE((SELECT sum(CASE WHEN s.type = 'website' THEN COALESCE(s.pages, 1) ELSE 1 END)
+    FROM knowledge_sources s JOIN bots b ON b.id = s.bot_id WHERE b.client_id = c.id), 0)::int AS document_count
   FROM clients c`;
 
 export async function listClients() {

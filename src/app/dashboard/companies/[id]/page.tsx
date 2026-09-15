@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import CompanyDetail from "./CompanyDetail";
 import { getCompany } from "@/lib/clients";
 import { getStats, listBots } from "@/lib/db";
+import { getDocumentCounts } from "@/lib/rag/store";
 import { pageAdmin } from "@/lib/session";
 import { TEMPLATES } from "@/lib/templates";
 import { appUrlFromHeaders } from "@/lib/url";
@@ -14,7 +15,8 @@ export default async function CompanyPage({ params }: PageProps<"/dashboard/comp
   const company = await getCompany(id);
   if (!company) notFound();
 
-  const [bots, stats, h] = await Promise.all([listBots(id), getStats(id), headers()]);
+  const bots = await listBots(id);
+  const [stats, documents, h] = await Promise.all([getStats(id), getDocumentCounts(bots.map((b) => b.id)), headers()]);
 
   return (
     <CompanyDetail
@@ -31,7 +33,7 @@ export default async function CompanyPage({ params }: PageProps<"/dashboard/comp
         access: accessState(b),
         trialEndsAt: b.trialEndsAt,
         replies: stats.perBot[b.id]?.messagesThisMonth ?? 0,
-        leads: stats.perBot[b.id]?.leads ?? 0,
+        documents: documents.get(b.id)?.documents ?? 0,
       }))}
     />
   );

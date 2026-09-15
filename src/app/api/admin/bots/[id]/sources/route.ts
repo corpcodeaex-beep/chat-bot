@@ -15,7 +15,7 @@ const MAX_PAGES = 50;
 export async function GET(_request: Request, ctx: RouteContext<"/api/admin/bots/[id]/sources">) {
   try {
     const { id } = await ctx.params;
-    await requireBot(id);
+    await requireBot(id, { privateData: true });
     return NextResponse.json({ sources: await listSources(id) });
   } catch (error) {
     return errorResponse(error);
@@ -41,7 +41,7 @@ async function assertRoom(bot: Bot, replaces: (s: KnowledgeSource) => boolean) {
 export async function POST(request: Request, ctx: RouteContext<"/api/admin/bots/[id]/sources">) {
   try {
     const { id } = await ctx.params;
-    const { bot } = await requireBot(id);
+    const { bot } = await requireBot(id, { privateData: true });
 
     if ((request.headers.get("content-type") ?? "").includes("multipart/form-data")) {
       const file = (await request.formData()).get("file");

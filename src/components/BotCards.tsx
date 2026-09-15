@@ -1,4 +1,4 @@
-import { MessagesSquare, Target } from "lucide-react";
+import { FileText, MessagesSquare, Target } from "lucide-react";
 import Link from "next/link";
 import TemplateIcon from "./TemplateIcon";
 import UsageBar from "./UsageBar";
@@ -12,9 +12,11 @@ interface Props {
   perBot: Record<string, { conversations: number; leads: number; messagesThisMonth: number; limitUsed: number }>;
   /** Admin view: company name per clientId. */
   companyNames?: Record<string, string>;
+  /** Admin view: documents per bot (company bots show only this, not chats or leads). */
+  documentCounts?: Record<string, number>;
 }
 
-export default function BotCards({ bots, perBot, companyNames }: Props) {
+export default function BotCards({ bots, perBot, companyNames, documentCounts }: Props) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {bots.map((bot) => {
@@ -39,14 +41,23 @@ export default function BotCards({ bots, perBot, companyNames }: Props) {
               </div>
             </div>
             <div className="flex gap-4 text-sm text-slate-600">
-              <span className="flex items-center gap-1.5">
-                <MessagesSquare className="h-4 w-4 text-slate-400" aria-hidden />
-                {counts?.conversations ?? 0} chats
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Target className="h-4 w-4 text-slate-400" aria-hidden />
-                {counts?.leads ?? 0} leads
-              </span>
+              {companyNames && bot.clientId ? (
+                <span className="flex items-center gap-1.5">
+                  <FileText className="h-4 w-4 text-slate-400" aria-hidden />
+                  {documentCounts?.[bot.id] ?? 0} documents
+                </span>
+              ) : (
+                <>
+                  <span className="flex items-center gap-1.5">
+                    <MessagesSquare className="h-4 w-4 text-slate-400" aria-hidden />
+                    {counts?.conversations ?? 0} chats
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Target className="h-4 w-4 text-slate-400" aria-hidden />
+                    {counts?.leads ?? 0} leads
+                  </span>
+                </>
+              )}
             </div>
             <UsageBar used={counts?.limitUsed ?? 0} limit={effectiveLimit(bot)} />
           </Link>

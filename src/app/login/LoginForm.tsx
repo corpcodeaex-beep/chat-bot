@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BRAND } from "@/lib/brand";
 
-export default function LoginForm({ next, usingDefaultPassword }: { next: string; usingDefaultPassword: boolean }) {
+export default function LoginForm({ next }: { next: string }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,12 +64,6 @@ export default function LoginForm({ next, usingDefaultPassword }: { next: string
           <LogIn className="h-4 w-4" aria-hidden />
           {loading ? "Checking..." : "Log in"}
         </button>
-        {usingDefaultPassword && (
-          <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800">
-            Admin login: email <b>admin</b>, password <b>admin123</b>. Set <code>ADMIN_PASSWORD</code> in <code>.env.local</code>{" "}
-            before going live.
-          </p>
-        )}
       </form>
     </main>
   );

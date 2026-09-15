@@ -1,7 +1,9 @@
 import { Bot, Gauge, KeyRound, MessageSquareText, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
+import NotificationBell from "@/components/NotificationBell";
 import { providerStatus } from "@/lib/ai";
+import { getAlerts } from "@/lib/alerts";
 import { BRAND } from "@/lib/brand";
 import { pageViewer } from "@/lib/session";
 
@@ -9,6 +11,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
   const viewer = await pageViewer();
   const isAdmin = viewer.role === "admin";
   const provider = isAdmin ? providerStatus() : null;
+  const alerts = await getAlerts(viewer);
   const links = isAdmin
     ? [
         { href: "/dashboard", label: "Overview", icon: Gauge },
@@ -51,6 +54,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
                 AI: {provider.label}
               </span>
             )}
+            <NotificationBell alerts={alerts} />
             <span className="hidden text-sm text-slate-500 sm:inline">{viewer.name}</span>
             <LogoutButton />
           </div>

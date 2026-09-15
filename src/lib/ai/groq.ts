@@ -2,7 +2,9 @@ import { AiError, type AiProvider } from "./types";
 
 // Groq (fast open-source models). Free API key: https://console.groq.com/keys
 export function groqProvider(apiKey: string): AiProvider {
-  const model = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  // Qwen follows the customer's language (Roman Urdu stays Roman Urdu) and uses few tokens.
+  // Free plan: 1,000 requests/day and 8,000 tokens/minute per model.
+  const model = process.env.GROQ_MODEL || "qwen/qwen3.8-27b";
   return {
     id: "groq",
     label: "Groq",
@@ -14,7 +16,9 @@ export function groqProvider(apiKey: string): AiProvider {
         body: JSON.stringify({
           model,
           temperature: 0.4,
-          max_tokens: 2048,
+          // Groq counts max_tokens against its output-tokens-per-minute limit (1,000 on the free plan),
+          // so keep it small; chat replies are short.
+          max_tokens: 512,
           messages: [{ role: "system", content: system }, ...messages],
         }),
       });
@@ -23,7 +27,10 @@ export function groqProvider(apiKey: string): AiProvider {
         const detail = data?.error?.message ?? res.statusText;
         throw new AiError(`Groq error (${res.status}): ${detail}`, res.status === 429 ? 429 : 502);
       }
-      const text = String(data?.choices?.[0]?.message?.content ?? "").trim();
+      // Reasoning models can include their thinking in <think> tags; customers should only see the answer.
+      const text = String(data?.choices?.[0]?.message?.content ?? "")
+        .replace(/<think>[\s\S]*?(<\/think>|$)/g, "")
+        .trim();
       if (!text) throw new AiError("Groq returned an empty answer.");
       return {
         text,
