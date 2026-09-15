@@ -62,10 +62,19 @@ export async function verifyEmailSetup(): Promise<{ ok: boolean; method: "smtp" 
   return process.env.RESEND_API_KEY ? { ok: true, method: "resend" } : { ok: false, method: "none" };
 }
 
-export async function sendEmail(message: { to: string; subject: string; html: string; text: string }): Promise<boolean> {
+export const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+export async function sendEmail(message: { to: string; subject: string; html: string; text: string; replyTo?: string }): Promise<boolean> {
   if (smtpConfigured()) {
     try {
-      await smtpTransport().sendMail({ from: fromAddress(), to: message.to, subject: message.subject, text: message.text, html: message.html });
+      await smtpTransport().sendMail({
+        from: fromAddress(),
+        to: message.to,
+        replyTo: message.replyTo,
+        subject: message.subject,
+        text: message.text,
+        html: message.html,
+      });
       return true;
     } catch (error) {
       console.error(`[email] SMTP error: ${(error as Error).message}`);
@@ -81,7 +90,14 @@ export async function sendEmail(message: { to: string; subject: string; html: st
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: fromAddress(), to: [message.to], subject: message.subject, html: message.html, text: message.text }),
+    body: JSON.stringify({
+      from: fromAddress(),
+      to: [message.to],
+      reply_to: message.replyTo,
+      subject: message.subject,
+      html: message.html,
+      text: message.text,
+    }),
   });
   if (!res.ok) {
     const data = await res.json().catch(() => null);

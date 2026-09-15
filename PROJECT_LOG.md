@@ -274,6 +274,69 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 - The company's own test chats from the dashboard are not counted. Days follow Pakistan time.
 - Bar colour `#2a78d6` passed the chart palette validator on white.
 
+### Step 12: Public website and landing pages
+
+A full marketing website, built into the same app (`src/app/(marketing)`):
+- **Home (`/`):**
+  - hero with an animated example chat (Roman Urdu) and floating "new lead" and "replied in Roman Urdu" cards
+  - moving industry strip
+  - problem section, features, how it works in 3 steps
+  - "trained on your business" (PDF, Word, website), languages side by side
+  - dark dashboard illustration, industries, pricing, FAQ, final call-to-action
+- **Features (`/features`):** knowledge, languages, leads and handoff (animated chat), channels, dashboard, security.
+- **Pricing (`/pricing`):** plan cards read from `src/lib/plans.ts` (prices always match the app), a comparison table, pricing FAQ.
+- **Industries (`/industries`)** plus **6 landing pages:** `/industries/clinics`, `real-estate`, `restaurants`, `schools`, `online-stores`, `salons`. Each has its own headline, before/after, an example chat, steps, pricing and FAQ.
+- **Contact (`/contact`):** a "Book a free demo" form (plan and industry can be preselected from links).
+  - Requests are saved (`site_inquiries` table) and emailed to `NOTIFY_EMAIL` or `SMTP_USER`, with reply-to set to the person.
+  - They show in the admin notification bell and on the new admin **Inquiries** page, where each can be marked handled.
+  - Spam protection: a hidden field for bots, and at most 5 requests per IP per 10 minutes.
+- **Sitewide:**
+  - sticky frosted header with a mobile menu, and a footer with contact details
+  - page titles and descriptions, share previews, `sitemap.xml`, and `robots.txt` (dashboard, API and embed pages hidden from search engines)
+  - animations switch off for people who prefer reduced motion
+- **Live chat bubble:** set `SITE_BOT_ID` to a bot's ID to show that assistant on the website (set locally to the Codeaex Chatbot).
+- **Honest content:** no fake testimonials or invented customer numbers; example chats and the dashboard are labelled as examples or illustrations. WhatsApp shows as "coming soon" until `SITE.whatsappLive` is set to `true` in `src/lib/marketing.ts`.
+- **Editing:** texts, contact details, FAQs and industries live in `src/lib/marketing.ts`.
+
+### Step 13: 3D-style motion redesign of the website
+
+The website was redesigned to feel 3D and animated, in a light and clean theme. It uses no photos and no three.js scenes; the existing chat, dashboard and knowledge visuals are kept.
+- **Motion (Motion Primitives style):** built on the `motion` package in `src/components/marketing/motion.tsx`.
+  - headlines reveal word by word
+  - cards tilt in 3D towards the mouse and have a spotlight glow
+  - hero layers move at different depths as the mouse moves (parallax)
+  - the dashboard tilts upright as you scroll to it
+  - buttons are magnetic, and sections fade and stagger in
+  - a line draws itself under "how it works", numbers count up, and a progress bar sits at the top of the page
+- **Backgrounds (Haikei style):** layered SVG waves between sections and blurred blob shapes, in `src/components/marketing/Backgrounds.tsx`.
+- **Colours (Realtime Colors style):** one elegant palette as `mk-*` tokens in `globals.css`: ink text `#1a1f2b`, warm ivory background `#f7f5f0`, deep navy primary `#1e2a3a`, sand secondary `#e8e1d3`, champagne gold accent `#b08d57`, sage `#a9b8ad`.
+  - The first purple and pink version was replaced at the user's request.
+  - Industry colours were muted to match: teal, forest, copper, slate blue, bronze and taupe.
+- **Pages:** home, features, pricing, industries, all 6 industry pages and contact use the new style. Inner pages share a `PageHero`.
+- **Shared parts:** header, footer, section headings, pricing cards and the call-to-action banner were restyled.
+- **Accessibility:** all motion follows the visitor's "reduce motion" setting, and the word-by-word headlines keep the full text for screen readers.
+- **Login and password pages:** `/login`, `/forgot-password` and `/reset-password` share a split-screen `AuthShell` (`src/components/auth`).
+  - left: a deep navy brand panel (fits the screen height, no page scroll on desktop) with the example chat and floating cards that move with the mouse (hidden on phones)
+  - right: a frosted form card with icon fields, a show/hide password button, clear error and success messages, and a strength bar for new passwords
+  - these pages are hidden from search engines
+  - the form uses a CSS fade-in, so it always shows even before scripts load
+  - the page fits the screen with no scroll on desktop, with no background circles; the chat preview is shorter on short screens
+
+### Step 14: Legal and company pages
+
+- **Policies:**
+  - Pages: `/privacy-policy`, `/terms`, `/refund-policy`, `/cookie-policy`, `/acceptable-use`.
+  - All five share one layout (`LegalPage`): a "short version" summary, a sticky contents list, numbered sections and links to the other policies.
+  - The texts live in `src/lib/legal.ts` (with `LEGAL_UPDATED`). They describe what the app really does: the `cb_session` login cookie, chat history in the visitor's browser, IPs only in memory for rate limits, hashed passwords, encrypted WhatsApp tokens, and the providers used (Neon, Gemini/Groq/Anthropic, Gmail SMTP/Resend, Meta).
+  - Terms and refunds: monthly PKR billing, cancel any time, full refunds for mistaken or duplicate charges, Pakistani law with Lahore courts.
+  - **They should be reviewed by a lawyer before launch.**
+- **About (`/about`):** mission, principles and a call-to-action, with no invented numbers or team details.
+- **404 page:** a branded "page not found" page with links home and to features.
+- **Links:**
+  - footer bottom bar links to all policies, and "About us" is in the Product column
+  - the demo form links to the Privacy Policy, and the login card links to Terms and Privacy
+  - the sitemap includes the new pages
+
 ---
 
 ## 4. Testing done
@@ -311,6 +374,9 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 | Reset link: form shown, short password rejected, reset works, link single-use, expired link refused, old sessions and old password stop working | Passed |
 | AI token numbers not shown or sent to companies | Passed |
 | Company dashboard shows chats/leads per day charts with range switch and table; a real chat is counted | Passed |
+| Website: all pages and 6 industry pages load, unknown industry 404, sitemap and robots.txt correct, key content and prices shown, plan preselected from links | Passed |
+| Contact form: bad email/phone rejected, bot submissions ignored, valid request saved and emailed, shown on Inquiries page and in the bell, alert clears when handled, update requires login | Passed |
+| Live chat bubble: `widget.js` with the Codeaex bot ID is loaded on the website (added after the page loads) | Verified in page data |
 | TypeScript check and lint | Clean |
 
 **Not yet tested:** real WhatsApp messages through Meta. This needs the app deployed online.

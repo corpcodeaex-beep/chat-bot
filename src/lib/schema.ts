@@ -117,6 +117,21 @@ export const SCHEMA: string[] = [
   )`,
   `CREATE INDEX IF NOT EXISTS password_resets_client_idx ON password_resets (client_id, created_at DESC)`,
 
+  // ---- Demo requests from the public website ----
+  `CREATE TABLE IF NOT EXISTS site_inquiries (
+    id text PRIMARY KEY,
+    name text NOT NULL,
+    business text,
+    email text NOT NULL,
+    phone text,
+    industry text,
+    plan text,
+    message text,
+    handled boolean NOT NULL DEFAULT false,
+    created_at timestamptz NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS site_inquiries_created_idx ON site_inquiries (created_at DESC)`,
+
   // ---- AI provider failures (shown to the admin) ----
   `CREATE TABLE IF NOT EXISTS ai_failures (
     id bigserial PRIMARY KEY,

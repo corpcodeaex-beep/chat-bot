@@ -14,8 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: BRAND.name,
+  metadataBase: new URL(process.env.PUBLIC_APP_URL || "http://localhost:3000"),
+  title: { default: `${BRAND.name}: AI chat assistants for businesses`, template: `%s · ${BRAND.name}` },
   description: BRAND.tagline,
+  openGraph: {
+    type: "website",
+    siteName: BRAND.name,
+    title: `${BRAND.name}: AI chat assistants that answer your customers 24/7`,
+    description: "Replies instantly in English, Urdu and Roman Urdu, learns from your website and documents, and sends you every lead.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

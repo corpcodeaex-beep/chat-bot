@@ -4,6 +4,7 @@ import { getRecentAiFailure } from "./ai/failures";
 import { getClient } from "./clients";
 import { getStats } from "./db";
 import { emailConfigured } from "./email";
+import { getOpenInquiries } from "./inquiries";
 import { getUnsentResetRequests } from "./password-reset";
 import { formatDay, formatNumber } from "./format";
 import { getPlan } from "./plans";
@@ -53,6 +54,17 @@ async function adminAlerts(): Promise<Alert[]> {
       detail: `${failure.provider}: ${failure.message.slice(0, 180)}. Customers were answered by ${provider.fallbacks.join(", then ")}.`,
       at: failure.at,
       action: "clear-ai-failures",
+    });
+  }
+  const openInquiries = await getOpenInquiries().catch(() => null);
+  if (openInquiries) {
+    alerts.push({
+      id: `inquiries:${openInquiries.latestAt}:${openInquiries.count}`,
+      severity: "info",
+      title: `${openInquiries.count} new demo ${openInquiries.count === 1 ? "request" : "requests"} from the website`,
+      detail: "Contact them, then mark each request as handled.",
+      href: "/dashboard/inquiries",
+      at: openInquiries.latestAt,
     });
   }
   if (provider.warning) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, CircleCheck, CirclePause, Copy, Lock, MessageCircle, Save, TriangleAlert, Unplug } from "lucide-react";
+import { Check, ChevronRight, CircleCheck, CirclePause, Copy, Lock, MessageCircle, Save, TriangleAlert, Unplug } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatDate } from "@/lib/format";
@@ -152,11 +152,14 @@ export default function WhatsAppPanel({ botId, isAdmin, info }: { botId: string;
                 </a>
                 , create a Business app and add the WhatsApp product.
               </li>
-              <li>Under WhatsApp → Configuration, set the webhook below and subscribe to the &quot;messages&quot; field.</li>
+              <li>
+                Under WhatsApp <ChevronRight className="inline h-3.5 w-3.5 align-[-2px]" aria-label="then" /> Configuration, set the webhook below and
+                subscribe to the &quot;messages&quot; field.
+              </li>
               <li>Add the business phone number and copy its Phone number ID.</li>
               <li>Create a permanent access token (System User with whatsapp_business_messaging permission).</li>
               <li>
-                Copy the App Secret (App settings → Basic) into <code>WHATSAPP_APP_SECRET</code> in <code>.env.local</code>.
+                Copy the App Secret (App settings <ChevronRight className="inline h-3.5 w-3.5 align-[-2px]" aria-label="then" /> Basic) into <code>WHATSAPP_APP_SECRET</code> in <code>.env.local</code>.
               </li>
             </ol>
           </div>

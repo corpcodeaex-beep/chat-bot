@@ -1,10 +1,10 @@
 "use client";
 
-import { LogIn } from "lucide-react";
+import { ArrowRight, CircleAlert, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { BRAND } from "@/lib/brand";
+import AuthField, { authButton } from "@/components/auth/AuthField";
 
 export default function LoginForm({ next }: { next: string }) {
   const router = useRouter();
@@ -32,45 +32,35 @@ export default function LoginForm({ next }: { next: string }) {
     }
   }
 
-  const input = "w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-indigo-500";
-
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-16">
-      <form onSubmit={submit} className="w-full max-w-sm space-y-4 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div>
-          <h1 className="text-xl font-semibold">{BRAND.name}</h1>
-          <p className="mt-1 text-sm text-slate-500">Log in to manage your chat assistants.</p>
-        </div>
-        <input
-          autoFocus
-          autoComplete="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          className={input}
-        />
-        <input
+    <form onSubmit={submit} className="space-y-5">
+      <AuthField label="Email" icon={Mail} autoFocus autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@business.com" />
+      <div>
+        <AuthField
+          label="Password"
+          icon={Lock}
           type="password"
           autoComplete="current-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          className={input}
+          placeholder="Your password"
         />
-        <div className="-mt-2 text-right">
-          <Link href="/forgot-password" className="text-xs text-indigo-700 hover:underline">
+        <div className="mt-2 text-right">
+          <Link href="/forgot-password" className="text-sm font-medium text-mk-primary hover:underline">
             Forgot password?
           </Link>
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          disabled={loading || !email || !password}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 py-2 font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-        >
-          <LogIn className="h-4 w-4" aria-hidden />
-          {loading ? "Checking..." : "Log in"}
-        </button>
-      </form>
-    </main>
+      </div>
+      {error && (
+        <p className="flex items-start gap-2 rounded-xl bg-rose-50 p-3 text-sm text-rose-700" role="alert">
+          <CircleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+          {error}
+        </p>
+      )}
+      <button disabled={loading || !email || !password} className={authButton}>
+        {loading ? "Checking..." : "Log in"}
+        <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden />
+      </button>
+    </form>
   );
 }

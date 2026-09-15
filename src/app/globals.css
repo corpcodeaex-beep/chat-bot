@@ -25,3 +25,36 @@ body {
 .cb-dot { animation: cb-bounce 1.2s infinite ease-in-out; }
 .cb-dot:nth-child(2) { animation-delay: 0.15s; }
 .cb-dot:nth-child(3) { animation-delay: 0.3s; }
+
+/* Website palette (Realtime Colors style: text, background, primary, secondary, accent) */
+@theme {
+  --color-mk-text: #1a1f2b;
+  --color-mk-muted: #5b616e;
+  --color-mk-background: #f7f5f0;
+  --color-mk-primary: #1e2a3a;
+  --color-mk-primary-dark: #121a26;
+  --color-mk-secondary: #e8e1d3;
+  --color-mk-accent: #b08d57;
+  --color-mk-sky: #a9b8ad;
+}
+
+/* Marketing site animations (switched off for people who prefer reduced motion) */
+@keyframes mk-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes mk-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes mk-fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes mk-glow { 0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); } 50% { opacity: 0.9; transform: translateX(-50%) scale(1.06); } }
+.mk-float { animation: mk-float 6s ease-in-out infinite; }
+.mk-float-slow { animation: mk-float 8s ease-in-out infinite 1s; }
+.mk-marquee { animation: mk-marquee 45s linear infinite; }
+.mk-marquee:hover { animation-play-state: paused; }
+.mk-fade-up { animation: mk-fade-up 0.45s ease-out both; }
+.mk-glow { animation: mk-glow 8s ease-in-out infinite; }
+.mk-grid {
+  background-image:
+    linear-gradient(to right, rgb(15 23 42 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(15 23 42 / 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mk-float, .mk-float-slow, .mk-marquee, .mk-fade-up, .mk-glow { animation: none; }
+}

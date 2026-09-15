@@ -1,4 +1,4 @@
-import { Bot, Gauge, KeyRound, MessageSquareText, Plus, Users } from "lucide-react";
+import { Bot, Gauge, Inbox, KeyRound, MessageSquareText, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import NotificationBell from "@/components/NotificationBell";
@@ -16,6 +16,7 @@ export default async function DashboardLayout({ children }: LayoutProps<"/dashbo
     ? [
         { href: "/dashboard", label: "Overview", icon: Gauge },
         { href: "/dashboard/companies", label: "Companies", icon: Users },
+        { href: "/dashboard/inquiries", label: "Inquiries", icon: Inbox },
         { href: "/dashboard/bots", label: "All bots", icon: Bot },
         { href: "/dashboard/new", label: "New bot", icon: Plus },
         { href: "/dashboard/account", label: "Account", icon: KeyRound },
