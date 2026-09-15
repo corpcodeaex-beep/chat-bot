@@ -196,6 +196,30 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
   - Limit and trial alerts are per company.
 - **Demo bots** (not linked to a company) keep their own plan settings.
 
+### Step 9: The bot keeps answering when the AI fails
+
+**Problem reported:** a customer asked "how can i contact?" and got "Sorry, I'm having trouble answering right now."
+
+**Cause:** Gemini's free quota for `gemini-3.6-flash` is only **20 requests**, and it was used up (error 429).
+
+**Fixes:**
+- **Fallback order:** the main AI (Gemini), then any other AI that has a key (for example a free `GROQ_API_KEY`), then **answers taken straight from the bot's knowledge (RAG)**. Customers always get a reply.
+- **Knowledge-only answers:**
+  - Contact questions (contact, phone, email, address, WhatsApp, "rabta") reply with the real phone numbers, emails and address found in the bot's notes and imported website/documents.
+  - Other questions reply with the 2–3 best matching sentences as short bullets. Words like prices, timings and services are understood (e.g. "fees kitni" also matches "Price: Rs.").
+  - Lead capture, human handoff and greetings still work.
+- **Admin warning:** every AI failure is saved in the database (`ai_failures`, kept 30 days). The Overview shows "AI failed N times in the last 24 hours" with the error and how to fix it.
+- **Model settings:** changing `GEMINI_MODEL` / `GROQ_MODEL` / `CLAUDE_MODEL` now takes effect without restarting.
+
+**Lighter model:** the default Gemini model is now `gemini-3.5-flash-lite`.
+- In testing it was the fastest (about 1.4 s against 7.5 s for `gemini-3.1-flash-lite`) and used the fewest tokens.
+- Through the app it answered contact, services (Roman Urdu) and address questions correctly from the bots' knowledge, with no failures.
+- Set `GEMINI_MODEL=gemini-3.6-flash` for smarter but slower answers.
+
+**To avoid quota problems for real clients:**
+- Turn on billing in Google AI Studio (paid tier, much higher limits), or
+- Add a free `GROQ_API_KEY` as a backup AI.
+
 ---
 
 ## 4. Testing done
@@ -222,6 +246,9 @@ Plans belong to the **company**. All of a company's bots share the plan, the fre
 | Upgrade company to Pro: its bots follow the plan, a 2nd bot is allowed, WhatsApp unlocks | Passed |
 | Shared reply limit across a company's bots; trial end blocks bots; clearing trial restores | Passed |
 | Revenue per company (two Pro companies = PKR 60,000); company deletes own bot, not others' | Passed |
+| Gemini forced to fail: customers still answered (HTTP 200) from knowledge; contact questions (English + Roman Urdu) return real phones, emails and exact address | Passed |
+| Services/pricing questions answered with short relevant bullets when AI fails | Passed |
+| AI failures saved and shown on Overview ("AI failed N times in the last 24 hours"); real Gemini 429 quota errors recorded | Passed |
 | TypeScript check and lint | Clean |
 
 **Not yet tested:** real WhatsApp messages through Meta. This needs the app deployed online.

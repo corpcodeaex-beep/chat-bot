@@ -3,7 +3,8 @@ import Link from "next/link";
 import BarList from "./BarList";
 import { providerStatus } from "@/lib/ai";
 import { getPlatformOverview, type AttentionKind } from "@/lib/admin-stats";
-import { formatMonth, formatNumber } from "@/lib/format";
+import { getRecentAiFailure } from "@/lib/ai/failures";
+import { formatDate, formatMonth, formatNumber } from "@/lib/format";
 import { PLAN_KEYS, PLANS, planPriceLabel } from "@/lib/plans";
 
 const SEVERITY: Record<AttentionKind, { label: string; tone: string }> = {
@@ -25,11 +26,27 @@ function StatTile({ label, value, detail }: { label: string; value: string; deta
 }
 
 export default async function AdminOverview() {
-  const [o, provider] = await Promise.all([getPlatformOverview(), Promise.resolve(providerStatus())]);
+  const [o, provider, failure] = await Promise.all([getPlatformOverview(), Promise.resolve(providerStatus()), getRecentAiFailure()]);
 
   return (
     <div className="space-y-8">
       {provider.warning && <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{provider.warning}</div>}
+      {failure && (
+        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+          <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+          <div className="space-y-1">
+            <p>
+              <b>AI failed {failure.last24h} {failure.last24h === 1 ? "time" : "times"} in the last 24 hours</b> (latest: {failure.provider},{" "}
+              {formatDate(failure.at)}). Customers were answered with {provider.fallbacks.join(", then ")} instead.
+            </p>
+            <p className="text-red-700">{failure.message}</p>
+            <p>
+              Fix: if it says quota, the free Gemini limit is used up. Turn on billing in Google AI Studio, or add a free{" "}
+              <code>GROQ_API_KEY</code> to <code>.env.local</code> as a backup AI.
+            </p>
+          </div>
+        </div>
+      )}
       {provider.active === "demo" && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           <b>Demo mode (no AI key).</b> Add a <code>GEMINI_API_KEY</code> to <code>.env.local</code> for real AI answers.

@@ -106,6 +106,15 @@ export const SCHEMA: string[] = [
     PRIMARY KEY (bot_id, month)
   )`,
 
+  // ---- AI provider failures (shown to the admin) ----
+  `CREATE TABLE IF NOT EXISTS ai_failures (
+    id bigserial PRIMARY KEY,
+    provider text NOT NULL,
+    message text NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now()
+  )`,
+  `CREATE INDEX IF NOT EXISTS ai_failures_created_idx ON ai_failures (created_at DESC)`,
+
   // ---- WhatsApp ----
   `CREATE TABLE IF NOT EXISTS whatsapp_accounts (
     bot_id text PRIMARY KEY REFERENCES bots(id) ON DELETE CASCADE,

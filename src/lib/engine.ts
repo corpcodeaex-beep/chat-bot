@@ -1,4 +1,4 @@
-import { getProvider } from "./ai";
+import { generateWithFallback } from "./ai";
 import type { AiMessage } from "./ai/types";
 import { getBot, getConversation, newId, saveConversation, upsertLead } from "./db";
 import { relevantKnowledge } from "./knowledge";
@@ -138,7 +138,8 @@ export async function runChat(input: ChatInput): Promise<ChatResult> {
     .filter(Boolean)
     .join("\n\n---\n\n");
 
-  const result = await getProvider().generate({
+  // Falls back to other AI providers, then demo mode, if the main one fails (e.g. free quota used up).
+  const result = await generateWithFallback({
     system: buildSystemPrompt(bot, knowledge),
     messages: recent,
     bot,

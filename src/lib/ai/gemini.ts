@@ -2,7 +2,8 @@ import { AiError, type AiProvider } from "./types";
 
 // Google Gemini. Free API key (no card): https://aistudio.google.com/apikey
 export function geminiProvider(apiKey: string): AiProvider {
-  const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+  // The lite model is fast, uses few tokens and has more generous free limits; plenty for customer chat.
+  const model = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
   return {
     id: "gemini",
     label: "Google Gemini",
